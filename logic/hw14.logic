@@ -1,0 +1,151 @@
+; CS 61A Summer 2014
+; Name: Alex Dotterweich
+; Login: cs61a-jd
+
+;;;;;;;;;;;;
+;; Sudoku ;;
+;;;;;;;;;;;;
+
+(fact (insert ?a ?r (?a . ?r)))
+(fact (insert ?a (?b . ?r) (?b . ?s))
+      (insert ?a ?r ?s))
+
+(fact (anagram () ()))
+(fact (anagram (?a . ?r) ?b)
+      (insert ?a ?s ?b)
+      (anagram ?r ?s))
+
+(fact (boxes ((?a ?b ?c ?d)
+              (?e ?f ?g ?h)
+              (?i ?j ?k ?l)
+              (?m ?n ?o ?p)))
+      (anagram (?a ?b ?e ?f) (1 2 3 4))
+      (anagram (?c ?d ?g ?h) (1 2 3 4))
+      (anagram (?i ?j ?m ?n) (1 2 3 4))
+      (anagram (?k ?l ?o ?p) (1 2 3 4))
+)
+
+(query (boxes ((?a  2  3 ?b)
+               ( 3  4  1  2)
+               ( 1 ?c  2 ?d)
+               ( 4  2  3  1))))
+; expect Success! ; a: 1	b: 4	c: 3	d: 4
+
+(query (boxes ((?a  2  3 ?b)
+               ( 3  4  3  2)
+               ( 1 ?c  2 ?d)
+               ( 4  2  3  1))))
+; expect Failed.
+
+(fact (rows ()))
+(fact (rows (?x . ?xs))
+     (anagram ?x (1 2 3 4)) 
+      (rows ?xs)
+)
+
+(query (rows (( 1  2  4 ?a)
+              (?b  3  2  1)
+              (?c  4  3  2)
+              ( 2  4  3 ?d))))
+; expect Success! ; a: 3	b: 4	c: 1	d: 1
+
+(query (rows (( 1  2  4 ?a)
+              (?b  3  2  1)
+              (?c  4  3  2)
+              ( 3  4  3 ?d))))
+; expect Failed.
+
+(fact (cols (() () () ())))
+(fact (cols ((?f . ?r)
+            (?f1 . ?r1)
+            (?f2 . ?r2)
+            (?f3 . ?r3)))
+            (anagram (?f ?f1 ?f2 ?f3) (1 2 3 4))
+            (cols (?r ?r1 ?r2 ?r3))
+             )
+
+(query (cols (( 1 ?b  4 ?d)
+              ( 3  3  2  1)
+              (?a  1 ?c  2)
+              ( 2  4  3  4))))
+; expect Success! ; b: 2	d: 3	a: 4	c: 1
+
+(query (cols (( 1 ?b  4 ?d)
+              ( 3  3  2  1)
+              (?a  1 ?c  2)
+              ( 2  4  3  1))))
+; expect Failed.
+
+(fact (solve ?grid)
+      (boxes ?grid)
+      (rows ?grid)
+      (cols ?grid)
+)
+
+(query (solve (( 1 ?b  4 ?d)
+               (?e  3 ?g  1)
+               (?i  4 ?k  2)
+               ( 2 ?n  3 ?p))))
+; expect Success! ; b: 2	d: 3	e: 4	g: 2	i: 3	k: 1	n: 1	p: 4
+
+(query (solve (( 1 ?b  4 ?d)
+               (?e  3 ?g  1)
+               (?i  1 ?k  2)
+               ( 2 ?n  3 ?p))))
+; expect Failed.
+
+;; Solve the Sudoku puzzle below.
+;; To solve the puzzle, uncomment the query below and run the file.
+;; You may also want to comment out the other queries.
+
+;; To run it with a different anagram fact, uncomment the relevant
+;; facts below AND comment out all other anagram facts (including the
+;; one at the beginning of this file).
+;; Then quit any existing Logic interpreters, and reload the file.
+
+;; Using the knowledge that we always want a permutation of (1 2 3 4)
+;; (fact (member ?x (?x . ?r)))
+;; (fact (member ?x (?y . ?r))
+;;       (member ?x ?r))
+;; (fact (anagram (?a ?b ?c ?d) (1 2 3 4))
+;;       (member 1 (?a ?b ?c ?d))
+;;       (member 2 (?a ?b ?c ?d))
+;;       (member 3 (?a ?b ?c ?d))
+;;       (member 4 (?a ?b ?c ?d)))
+
+;; Brute force - list all the possible anagrams
+;; (fact (anagram (1 2 3 4) (1 2 3 4)))
+;; (fact (anagram (1 2 4 3) (1 2 3 4)))
+;; (fact (anagram (1 3 2 4) (1 2 3 4)))
+;; (fact (anagram (1 3 4 2) (1 2 3 4)))
+;; (fact (anagram (1 4 2 3) (1 2 3 4)))
+;; (fact (anagram (1 4 3 2) (1 2 3 4)))
+;; (fact (anagram (2 1 3 4) (1 2 3 4)))
+;; (fact (anagram (2 1 4 3) (1 2 3 4)))
+;; (fact (anagram (2 3 1 4) (1 2 3 4)))
+;; (fact (anagram (2 3 4 1) (1 2 3 4)))
+;; (fact (anagram (2 4 1 3) (1 2 3 4)))
+;; (fact (anagram (2 4 3 1) (1 2 3 4)))
+;; (fact (anagram (3 2 1 4) (1 2 3 4)))
+;; (fact (anagram (3 2 4 1) (1 2 3 4)))
+;; (fact (anagram (3 1 2 4) (1 2 3 4)))
+;; (fact (anagram (3 1 4 2) (1 2 3 4)))
+;; (fact (anagram (3 4 2 1) (1 2 3 4)))
+;; (fact (anagram (3 4 1 2) (1 2 3 4)))
+;; (fact (anagram (4 2 3 1) (1 2 3 4)))
+;; (fact (anagram (4 2 1 3) (1 2 3 4)))
+;; (fact (anagram (4 3 2 1) (1 2 3 4)))
+;; (fact (anagram (4 3 1 2) (1 2 3 4)))
+;; (fact (anagram (4 1 2 3) (1 2 3 4)))
+;; (fact (anagram (4 1 3 2) (1 2 3 4)))
+
+;; MAKE SURE THAT THIS QUERY IS COMMENTED OUT BEFORE SUBMITTING
+;; Otherwise you may time out the autograder.
+;; (query (solve (( 3 ?b ?c  1)
+;;                ( 1 ?f ?g ?h)
+;;                (?i ?j ?k ?l)
+;;                (?m ?n  2 ?p))))
+
+; YOUR CODE HERE
+
+

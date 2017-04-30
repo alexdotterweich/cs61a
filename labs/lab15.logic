@@ -1,0 +1,15 @@
+; Name: 
+; Login: 
+
+;;;;;;;;;;;;
+;; Lab 15 ;;
+;;;;;;;;;;;;
+
+(fact (append () ?b ?b))
+(fact (append (?a . ?x) ?y (?a . ?z))
+      (append ?x ?y ?z))
+
+; YOUR CODE HERE
+
+(query (reverse (1 2 3) ?what))
+; expect Success! ; what: (3 2 1)
